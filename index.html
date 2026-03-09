@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MANJII V2 - Premium System Optimizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Plus+Jakarta+Sans:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f2fe;
+            --bg-dark: #020406;
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .font-logo { font-family: 'Orbitron', sans-serif; }
+
+        /* Header Estetik */
+        .neon-glow {
+            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 32px;
+            margin: 10px 0 0 0;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #aaa;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Menu Dropdown */
+        .label-select {
+            display: block;
+            text-align: left;
+            font-size: 10px;
+            color: var(--neon-cyan);
+            margin-bottom: 5px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            background: #111;
+            color: white;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            outline: none;
+        }
+
+        /* Tombol Utama */
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            background: var(--neon-cyan);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            box-shadow: 0 0 20px var(--neon-cyan);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover { transform: scale(1.02); opacity: 0.9; }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: #000;
+            height: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--neon-cyan);
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            transition: width 0.1s linear;
+        }
+
+        /* Result Items */
+        .res-item {
+            background: rgba(0, 242, 254, 0.05);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .res-label { font-size: 11px; color: #bbb; font-weight: 800; text-transform: uppercase; }
+        .res-value { font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); font-size: 18px; font-weight: 900; }
+
+        footer { margin-top: 30px; font-size: 10px; color: #444; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="margin-bottom: 30px;">
+        <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 30L50 50L80 30M20 70L50 50L80 70" stroke="#00f2fe" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <h1 class="font-logo neon-glow">MANJII V2</h1>
+        <p class="subtitle">PREMIUM SYSTEM OPTIMIZER</p>
+    </div>
+
+    <div class="card">
+        <p style="font-size: 11px; font-style: italic; color: #ccc; line-height: 1.6; margin: 0;">
+            "Optimasi sensitivitas ini dirilis resmi oleh <b>MANJII iOS</b> untuk menstabilkan kursor dan memaksimalkan tarikan aim secara instan."
+        </p>
+    </div>
+
+    <div id="setup-view">
+        <div class="card">
+            <label class="label-select">DEVICE CATEGORY</label>
+            <select id="deviceType" onchange="loadModels()">
+                <option value="iphone">APPLE IPHONE</option>
+                <option value="ipad">APPLE IPAD</option>
+                <option value="android">ANDROID DEVICES</option>
+            </select>
+
+            <label class="label-select">SPECIFIC MODEL</label>
+            <select id="deviceModel"></select>
+
+            <button class="btn-main" onclick="startProcess()">GENERATE CONFIG</button>
+        </div>
+    </div>
+
+    <div id="loading-view" style="display: none;" class="card">
+        <h3 class="font-logo" style="color: var(--neon-cyan);">ENCRYPTING DATA...</h3>
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <p id="percent" class="font-logo" style="font-size: 24px;">0%</p>
+    </div>
+
+    <div id="result-view" style="display: none;">
+        <div class="card" id="res-list"></div>
+        <button onclick="location.reload()" style="background:none; border:1px solid #333; color:#555; padding:10px; width:100%; border-radius:8px; font-size:10px;">BACK TO MENU</button>
+    </div>
+
+    <footer>
+        <p class="font-logo" style="color: var(--neon-cyan);">&copy; 2026 MANJII iOS OFFICIAL</p>
+        <p>TikTok: @manjiixit | Admin: 083845203074</p>
+    </footer>
+</div>
+
+<script>
+    const models = {
+        iphone: [
+            "iPhone 7", "iPhone 7 Plus", "iPhone 8", "iPhone 8 Plus", "iPhone X", "iPhone XR", "iPhone XS", "iPhone XS Max",
+            "iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max", "iPhone 12 Mini", "iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max",
+            "iPhone 13", "iPhone 13 Pro Max", "iPhone 14 Pro Max", "iPhone 15 Pro Max", "iPhone 16 Pro Max", "iPhone 17 Pro Max"
+        ],
+        ipad: [
+            "iPad Mini 6", "iPad Air 5", "iPad Pro 11 M2", "iPad Pro 11 M4", "iPad Pro 13 M4"
+        ],
+        android: [
+            "ROG Phone 8 Pro", "Poco F6 Pro", "Black Shark 5", "Samsung S24 Ultra", "Infinix GT 20 Pro", "RedMagic 9 Pro"
+        ]
+    };
+
+    function loadModels() {
+        const type = document.getElementById('deviceType').value;
+        const select = document.getElementById('deviceModel');
+        select.innerHTML = "";
+        models[type].forEach(m => {
+            let opt = document.createElement('option');
+            opt.value = m; opt.innerHTML = m;
+            select.appendChild(opt);
+        });
+    }
+
+    function startProcess() {
+        document.getElementById('setup-view').style.display = 'none';
+        document.getElementById('loading-view').style.display = 'block';
+        let p = 0;
+        const bar = document.getElementById('progress-bar');
+        const txt = document.getElementById('percent');
+        const iv = setInterval(() => {
+            p += Math.floor(Math.random()*4)+1;
+            if(p>100) p=100;
+            bar.style.width = p+'%';
+            txt.innerText = p+'%';
+            if(p>=100) { clearInterval(iv); setTimeout(showRes, 500); }
+        }, 60);
+    }
+
+    function showRes() {
+        document.getElementById('loading-view').style.display = 'none';
+        document.getElementById('result-view').style.display = 'block';
+        const type = document.getElementById('deviceType').value;
+        const rn = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+        
+        const labelKhusus = type === 'iphone' ? 'SET IPHONE' : (type === 'ipad' ? 'SET IPAD' : 'SET ANDRO');
+
+        const data = [
+            ["Lihat Sekeliling", rn(195, 200)],
+            ["Red Dot Sight", rn(188, 199)],
+            ["2x Scope", rn(185, 198)],
+            ["4x Scope", rn(185, 198)],
+            ["Sniper Scope", rn(120, 155)],
+            ["Tombol Kamera Bebas", rn(160, 200)],
+            ["DPI / Lebar", rn(450, 950)],
+            ["Tombol Tembak", rn(38, 52) + "%"],
+            [labelKhusus, "ULTRA ACTIVE"]
+        ];
+
+        document.getElementById('res-list').innerHTML = data.map(s => `
+            <div class="res-item">
+                <span class="res-label">${s[0]}</span>
+                <span class="res-value">${s[1]}</span>
+            </div>
+        `).join('');
+    }
+
+    loadModels();
+</script>
+</body>
+</html>
