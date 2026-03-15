@@ -284,14 +284,15 @@ const TOKEN = p1 + p2 + p3;
 
    // FUNGSI UPDATE: KIRIM KE GITHUB GIST (ONLINE)
     async function saveToDatabase(uid) {
-    const deviceElement = document.getElementById('model-select');
+    // Mencari elemen dropdown dengan berbagai kemungkinan ID yang kamu pakai
+    const deviceElement = document.getElementById('model-select') || document.getElementById('deviceModel') || document.querySelector('select');
     const selectedDevice = deviceElement ? deviceElement.value : "Unknown Device";
 
     try {
-        let res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-        if (!res.ok) throw new Error("Gagal mengambil data Gist");
+        const res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+        if (!res.ok) throw new Error("Gagal ambil data Gist");
         
-        let gist = await res.json();
+        const gist = await res.json();
         let content = JSON.parse(gist.files["uid_database.json"].content);
         
         content.push({ 
@@ -300,7 +301,7 @@ const TOKEN = p1 + p2 + p3;
             device: selectedDevice 
         });
 
-        let update = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+        const update = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
             method: 'PATCH',
             headers: { 
                 'Authorization': `token ${TOKEN}`,
@@ -312,16 +313,16 @@ const TOKEN = p1 + p2 + p3;
         });
 
         if (update.ok) {
-            console.log("✅ Data Berhasil Masuk!");
-            alert("✅ VERIFIKASI BERHASIL!");
+            alert("✅ VERIFIKASI BERHASIL!\nDevice: " + selectedDevice);
         } else {
-            console.error("Gagal update Gist");
+            alert("❌ Gagal update ke Server.");
         }
     } catch (e) { 
-        console.error("Sistem Error: ", e);
+        console.error("Error:", e);
+        alert("⚠️ Terjadi kesalahan koneksi.");
     }
-
-    function loadModels() {
+}
+ function loadModels() {
         const type = document.getElementById('deviceType').value;
         const select = document.getElementById('deviceModel');
         select.innerHTML = "";
