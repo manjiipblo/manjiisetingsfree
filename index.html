@@ -96,16 +96,32 @@
             margin: 20px auto;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-        .checkmark-wrapper { display: none; margin: 20px auto; }
+        .checkmark-wrapper {
+            display: none;
+            margin: 20px auto;
+        }
+
         .checkmark {
-            width: 60px; height: 60px; border-radius: 50%; display: block;
-            stroke-width: 2; stroke: var(--success-green); stroke-miterlimit: 10;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: var(--success-green);
+            stroke-miterlimit: 10;
+            box-shadow: inset 0px 0px 0px var(--success-green);
             animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
         }
+
         .checkmark__check {
-            transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48;
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
             animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
         }
 
@@ -114,33 +130,70 @@
         @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px transparent; } }
 
         .marquee-box {
-            width: 100%; overflow: hidden; background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px; margin-bottom: 15px; padding: 5px 0;
+            width: 100%;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 5px 0;
         }
+
         .marquee-text {
-            display: inline-block; white-space: nowrap; font-size: 10px;
-            color: #ffcc00; font-weight: 800; animation: marquee 15s linear infinite;
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 10px;
+            color: #ffcc00;
+            font-weight: 800;
+            animation: marquee 15s linear infinite;
         }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
 
         .btn-main {
-            width: 100%; padding: 18px; background: var(--neon-cyan);
-            color: black; border: none; border-radius: 10px;
-            font-family: 'Orbitron', sans-serif; font-weight: 900;
-            box-shadow: 0 0 20px var(--neon-cyan); cursor: pointer; text-transform: uppercase;
+            width: 100%;
+            padding: 18px;
+            background: var(--neon-cyan);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            box-shadow: 0 0 20px var(--neon-cyan);
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
         .progress-container {
-            width: 100%; background: #000; height: 12px; border-radius: 10px;
-            border: 1px solid var(--neon-cyan); margin: 20px 0; overflow: hidden;
+            width: 100%;
+            background: #000;
+            height: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--neon-cyan);
+            margin: 20px 0;
+            overflow: hidden;
         }
-        #progress-bar { width: 0%; height: 100%; background: var(--neon-cyan); transition: width 0.1s linear; }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--neon-cyan);
+            transition: width 0.1s linear;
+        }
 
         .res-item {
-            background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 14px; border-radius: 10px; margin-bottom: 10px;
-            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 242, 254, 0.05);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
         .res-label { font-size: 11px; color: #bbb; font-weight: 800; }
         .res-value { font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); font-size: 18px; font-weight: 900; }
 
@@ -189,13 +242,16 @@
 
     <div id="loading-view" style="display: none;" class="card">
         <h3 id="loading-text" class="font-logo" style="color: var(--neon-cyan);">ENCRYPTING DATA...</h3>
+        
         <div id="spinner-animation" class="spinner"></div>
+
         <div id="checkmark-animation" class="checkmark-wrapper">
             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <circle cx="26" cy="26" r="25" fill="none" stroke="#2ecc71" stroke-width="2"/>
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
                 <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
             </svg>
         </div>
+
         <div id="bar-container" class="progress-container"><div id="progress-bar"></div></div>
         <p id="percent" class="font-logo" style="font-size: 24px;">0%</p>
     </div>
@@ -212,11 +268,24 @@
 </div>
 
 <script>
+    // DATA MODELS
     const models = {
         iphone: ["iPhone 7", "iPhone 7 Plus", "iPhone 8", "iPhone 8 Plus", "iPhone X", "iPhone XR", "iPhone XS", "iPhone XS Max", "iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max", "iPhone 12 Mini", "iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max", "iPhone 13", "iPhone 13 Pro Max", "iPhone 14 Pro Max", "iPhone 15 Pro Max", "iPhone 16 Pro Max", "iPhone 17 Pro Max"],
         ipad: ["iPad Mini 6", "iPad Air 5", "iPad Pro 11 M2", "iPad Pro 11 M4", "iPad Pro 13 M4"],
         android: ["ROG Phone 8 Pro", "Poco F6 Pro", "Black Shark 5", "Samsung S24 Ultra", "Infinix GT 20 Pro", "RedMagic 9 Pro"]
     };
+
+    // FUNGSI SIMPAN KE LOCALSTORAGE (PENGGANTI FILEMANAGER)
+    function saveToDatabase(uid) {
+        let db = JSON.parse(localStorage.getItem('uid_database')) || [];
+        let date = new Date().toLocaleString('id-ID', { 
+            day: '2-digit', month: 'short', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+        });
+        db.push({ uid: uid, date: date });
+        localStorage.setItem('uid_database', JSON.stringify(db));
+        console.log("UID Saved:", uid);
+    }
 
     function loadModels() {
         const type = document.getElementById('deviceType').value;
@@ -251,6 +320,11 @@
             txt.innerText = p+'%';
             if(p>=100) { 
                 clearInterval(iv); 
+                
+                // SIMPAN KE DATABASE LOKAL BROWSER
+                saveToDatabase(uid);
+
+                // Animasi Sukses
                 document.getElementById('spinner-animation').style.display = 'none';
                 document.getElementById('bar-container').style.display = 'none';
                 document.getElementById('percent').style.display = 'none';
@@ -259,7 +333,6 @@
                 document.getElementById('loading-text').style.color = "#2ecc71";
 
                 setTimeout(() => {
-                    // Di GitHub Pages, kita ganti alert Scriptable dengan transisi halaman langsung
                     document.getElementById('loading-view').style.display = 'none';
                     document.getElementById('setup-view').style.display = 'block';
                     loadModels();
@@ -315,6 +388,9 @@
             </div>
         `).join('');
     }
+    
+    // Inisialisasi awal
+    window.onload = loadModels;
 </script>
 </body>
 </html>
