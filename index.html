@@ -334,47 +334,36 @@ const TOKEN = p1 + p2 + p3;
     }
 
     function verifyUid() {
-        const uid = document.getElementById('playerUid').value;
-        if (!uid) { alert("Masukkan UID terlebih dahulu!"); return; }
+    const uidInput = document.getElementById('player-id');
+    const deviceElement = document.getElementById('model-select');
+    
+    const uid = uidInput ? uidInput.value : "";
+    const selectedDevice = deviceElement ? deviceElement.value : "";
 
-        document.getElementById('uid-view').style.display = 'none';
-        document.getElementById('loading-view').style.display = 'block';
-        document.getElementById('spinner-animation').style.display = 'block';
-        document.getElementById('checkmark-animation').style.display = 'none';
-        document.getElementById('bar-container').style.display = 'block';
-        document.getElementById('percent').style.display = 'block';
-        document.getElementById('loading-text').innerText = "VERIFYING UID...";
-        
-        let p = 0;
-        const bar = document.getElementById('progress-bar');
-        const txt = document.getElementById('percent');
-        const iv = setInterval(async () => {
-            p += Math.floor(Math.random()*10)+5;
-            if(p>100) p=100;
-            bar.style.width = p+'%';
-            txt.innerText = p+'%';
-            if(p>=100) { 
-                clearInterval(iv); 
-                
-                // SIMPAN KE DATABASE LOKAL BROWSER
-                await saveToDatabase(uid); // Baris ini yang memicu pengiriman data ke Gist
-
-                // Animasi Sukses
-                document.getElementById('spinner-animation').style.display = 'none';
-                document.getElementById('bar-container').style.display = 'none';
-                document.getElementById('percent').style.display = 'none';
-                document.getElementById('checkmark-animation').style.display = 'block';
-                document.getElementById('loading-text').innerText = "UID CONNECTED!";
-                document.getElementById('loading-text').style.color = "#2ecc71";
-
-                setTimeout(() => {
-                    document.getElementById('loading-view').style.display = 'none';
-                    document.getElementById('setup-view').style.display = 'block';
-                    loadModels();
-                }, 1500);
-            }
-        }, 50);
+    // 1. Cek apakah UID sudah diisi
+    if (!uid) { 
+        alert("⚠️ MASUKKAN UID PLAYER!"); 
+        return; 
     }
+
+    // 2. Cek apakah sudah pilih device (Bukan iPhone 7 otomatis)
+    // Jika user belum milih, kita ingatkan mereka
+    if (selectedDevice === "iPhone 7") {
+        const yakin = confirm("Kamu memilih iPhone 7. Apakah ini benar? Jika bukan, klik Cancel dan pilih device di bawah dulu.");
+        if (!yakin) return;
+    }
+
+    // Jika sudah OK, baru jalankan proses
+    startProcess(); 
+    
+    setTimeout(async () => {
+        try {
+            await saveToDatabase(uid);
+        } catch (e) {
+            console.error(e);
+        }
+    }, 1000);
+}
 
     function startProcess() {
         document.getElementById('setup-view').style.display = 'none';
