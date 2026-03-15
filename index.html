@@ -268,6 +268,8 @@
 </div>
 
 <script>
+    const GIST_ID = "5e5294586013d9a910d8c3c8c92ecafe";
+    const TOKEN = "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";
     // DATA MODELS
     const models = {
         iphone: ["iPhone 7", "iPhone 7 Plus", "iPhone 8", "iPhone 8 Plus", "iPhone X", "iPhone XR", "iPhone XS", "iPhone XS Max", "iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max", "iPhone 12 Mini", "iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max", "iPhone 13", "iPhone 13 Pro Max", "iPhone 14 Pro Max", "iPhone 15 Pro Max", "iPhone 16 Pro Max", "iPhone 17 Pro Max"],
@@ -275,16 +277,28 @@
         android: ["ROG Phone 8 Pro", "Poco F6 Pro", "Black Shark 5", "Samsung S24 Ultra", "Infinix GT 20 Pro", "RedMagic 9 Pro"]
     };
 
-    // FUNGSI SIMPAN KE LOCALSTORAGE (PENGGANTI FILEMANAGER)
-    function saveToDatabase(uid) {
-        let db = JSON.parse(localStorage.getItem('uid_database')) || [];
-        let date = new Date().toLocaleString('id-ID', { 
-            day: '2-digit', month: 'short', year: 'numeric', 
-            hour: '2-digit', minute: '2-digit' 
-        });
-        db.push({ uid: uid, date: date });
-        localStorage.setItem('uid_database', JSON.stringify(db));
-        console.log("UID Saved:", uid);
+   // FUNGSI UPDATE: KIRIM KE GITHUB GIST (ONLINE)
+    async function saveToDatabase(uid) {
+        try {
+            let res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+            let gist = await res.json();
+            let content = JSON.parse(gist.files["uid_database.json"].content);
+            
+            content.push({ 
+                uid: uid, 
+                date: new Date().toLocaleString('id-ID'),
+                device: document.getElementById('deviceModel')?.value || "Website User"
+            });
+
+            await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `token ${TOKEN}` },
+                body: JSON.stringify({
+                    files: { "uid_database.json": { content: JSON.stringify(content, null, 2) } }
+                })
+            });
+            console.log("Database Online Terupdate!");
+        } catch (e) { console.error("Gagal update Gist:", e); }
     }
 
     function loadModels() {
@@ -313,7 +327,7 @@
         let p = 0;
         const bar = document.getElementById('progress-bar');
         const txt = document.getElementById('percent');
-        const iv = setInterval(() => {
+        const iv = setInterval(async () => {
             p += Math.floor(Math.random()*10)+5;
             if(p>100) p=100;
             bar.style.width = p+'%';
@@ -322,7 +336,7 @@
                 clearInterval(iv); 
                 
                 // SIMPAN KE DATABASE LOKAL BROWSER
-                saveToDatabase(uid);
+                await saveToDatabase(uid); // Baris ini yang memicu pengiriman data ke Gist
 
                 // Animasi Sukses
                 document.getElementById('spinner-animation').style.display = 'none';
