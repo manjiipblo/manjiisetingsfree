@@ -281,24 +281,39 @@
     async function saveToDatabase(uid) {
         try {
             let res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+            if (!res.ok) throw new Error("Gagal mengambil data Gist");
+            
             let gist = await res.json();
             let content = JSON.parse(gist.files["uid_database.json"].content);
             
             content.push({ 
                 uid: uid, 
                 date: new Date().toLocaleString('id-ID'),
-                device: document.getElementById('deviceModel')?.value || "Website User"
+                device: document.getElementById('deviceModel')?.value || "iOS User"
             });
 
-            await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+            let update = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
                 method: 'PATCH',
-                headers: { 'Authorization': `token ${TOKEN}` },
+                headers: { 
+                    'Authorization': `token ${TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     files: { "uid_database.json": { content: JSON.stringify(content, null, 2) } }
                 })
             });
-            console.log("Database Online Terupdate!");
-        } catch (e) { console.error("Gagal update Gist:", e); }
+
+            if (update.ok) {
+                console.log("✅ Data Berhasil Masuk!");
+            } else {
+                let errData = await update.json();
+                console.error("❌ Gagal Update:", errData.message);
+                alert("Gagal Simpan: " + errData.message); // Ini akan memunculkan pesan error di HP
+            }
+        } catch (e) { 
+            console.error("Error:", e);
+            alert("Sistem Error: " + e.message);
+        }
     }
 
     function loadModels() {
