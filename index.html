@@ -284,41 +284,41 @@ const TOKEN = p1 + p2 + p3;
 
    // FUNGSI UPDATE: KIRIM KE GITHUB GIST (ONLINE)
     async function saveToDatabase(uid) {
-        try {
-            let res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-            if (!res.ok) throw new Error("Gagal mengambil data Gist");
-            
-            let gist = await res.json();
-            let content = JSON.parse(gist.files["uid_database.json"].content);
-            
-            content.push({ 
-                uid: uid, 
-                date: new Date().toLocaleString('id-ID'),
-                device: document.getElementById('deviceModel')?.value || "iOS User"
-            });
+    const deviceElement = document.getElementById('model-select');
+    const selectedDevice = deviceElement ? deviceElement.value : "Unknown Device";
 
-            let update = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-                method: 'PATCH',
-                headers: { 
-                    'Authorization': `token ${TOKEN}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    files: { "uid_database.json": { content: JSON.stringify(content, null, 2) } }
-                })
-            });
+    try {
+        let res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+        if (!res.ok) throw new Error("Gagal mengambil data Gist");
+        
+        let gist = await res.json();
+        let content = JSON.parse(gist.files["uid_database.json"].content);
+        
+        content.push({ 
+            uid: uid, 
+            date: new Date().toLocaleString('id-ID'),
+            device: selectedDevice 
+        });
 
-            if (update.ok) {
-                console.log("✅ Data Berhasil Masuk!");
-            } else {
-                let errData = await update.json();
-                console.error("❌ Gagal Update:", errData.message);
-                alert("Gagal Simpan: " + errData.message); // Ini akan memunculkan pesan error di HP
-            }
-        } catch (e) { 
-            console.error("Error:", e);
-            alert("Sistem Error: " + e.message);
+        let update = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+            method: 'PATCH',
+            headers: { 
+                'Authorization': `token ${TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                files: { "uid_database.json": { content: JSON.stringify(content, null, 2) } }
+            })
+        });
+
+        if (update.ok) {
+            console.log("✅ Data Berhasil Masuk!");
+            alert("✅ VERIFIKASI BERHASIL!");
+        } else {
+            console.error("Gagal update Gist");
         }
+    } catch (e) { 
+        console.error("Sistem Error: ", e);
     }
 
     function loadModels() {
